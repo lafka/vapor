@@ -30,7 +30,7 @@ defmodule Vapor.Provider.Env do
       else
         envs =
           bound_envs
-          |> Enum.reject(fn {_, data} -> data.val == :missing end)
+          |> Enum.reject(fn {_, data} -> data.val in [:missing, :skip] end)
           |> Enum.map(fn {name, data} -> {name, data.val} end)
           |> Enum.into(%{})
 
@@ -51,7 +51,7 @@ defmodule Vapor.Provider.Env do
           val = if data.opts[:default] != nil do
             data.opts[:default]
           else
-            if data.opts[:required], do: :missing, else: nil
+            if data.opts[:required], do: :missing, else: :skip
           end
           {name, %{data | val: val}}
 
